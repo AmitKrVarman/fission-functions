@@ -1,0 +1,52 @@
+{
+  "tasks": {
+    "CreateTicket": {
+      "id": "CreateTicket",
+      "functionRef": "register-ticket-v2",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQudGlja2V0RGV0YWlsc30="
+        }
+      },
+      "requires": {
+        "GetWeatherData": {
+
+        },
+        "TransformData": {
+
+        }
+      },
+      "await": 2
+    },
+    "GetWeatherData": {
+      "id": "GetWeatherData",
+      "functionRef": "get-weather-data-v2",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQud2VhdGhlckFQSUlucHV0fQ=="
+        }
+      },
+      "requires": {
+        "TransformData": {
+
+        }
+      },
+      "await": 1
+    },
+    "TransformData": {
+      "id": "TransformData",
+      "functionRef": "transform-data",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuSW52b2NhdGlvbi5JbnB1dHMuZGVmYXVsdH0="
+        }
+      },
+      "requires": {
+      }
+    }
+  },
+  "outputTask": "CreateTicket"
+}

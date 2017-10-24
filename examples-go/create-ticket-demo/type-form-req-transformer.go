@@ -1,5 +1,14 @@
 package main
 
+/*
+This API serves a web hook for TYPE FORM
+-  transforms the input JSON to Fresh Desk create ticket schema
+-  collects weather data by calling Wunderground API
+-  create ticket in freshdesk
+-  created for demo purpose, it will be migrated to workflow
+
+*/
+
 import (
 	"bytes"
 	"encoding/json"
@@ -10,7 +19,7 @@ import (
 	"time"
 )
 
-func Handler(w http.ResponseWriter, r *http.Request) {
+func Handler1(w http.ResponseWriter, r *http.Request) {
 
 	//Marhsal TYPE FORM DATA to TypeFormData struct
 	var typeFormdata TypeFormData

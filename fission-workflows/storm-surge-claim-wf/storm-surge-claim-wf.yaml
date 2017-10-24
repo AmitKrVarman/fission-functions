@@ -1,0 +1,26 @@
+apiVersion: 1
+description: Capture FORMS request and Create Fresh Desk Ticket
+output: CreateTicket
+# Input: 'San Fransisco, CA'
+tasks:
+  # Capture TYPE FORM Req and transform for Fresh Desk
+  TransformData:
+    run: transform-data
+    inputs: "{$.Invocation.Inputs.default}"
+
+  # GET Weather Data
+  GetWeatherData:
+    run: get-weather-data-v2
+    inputs: "{$.Tasks.TransformData.Output.weatherAPIInput}"
+    requires:
+    - TransformData
+
+    # Create Fresh Desk Ticket
+  CreateTicket:
+    run: register-ticket-v2
+    inputs: "{$.Tasks.TransformData.Output.ticketDetails}"
+    requires:
+    - TransformData
+    - GetWeatherData
+
+

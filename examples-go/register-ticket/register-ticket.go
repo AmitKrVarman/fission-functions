@@ -1,33 +1,48 @@
 package main
 
+/*
+This API would accept JSON string as POST body and
+create a Ticket in Zen Desk/Fresh Desk
+*/
+
 import (
 	"log"
 	"net/http"
 	"os"
 )
 
-//Default values
+//Default values , this can be overridden by setting ENV variables
 var (
-	ENV_API_END_POINT string = "https://helmion.freshdesk.com/api/v2/tickets"
-	ENV_API_KEY       string = "MbzSRhpf0gBjQEdDLirp"
-	ENV_API_PASSWORD  string = "X"
+	endPoint    = "https://helmion.zendesk.com/api/v2/users.json"
+	apiKey      = "aguaparachocolate@gmail.com/token"
+	apiPassword = "3OdKmqWsCL8uKR0QSH0jqmdVWx44CagRnRS01mnL"
 )
 
-type TicketDetails struct {
-	Email       string `json:"email"`
-	Subject     string `json:"subject"`
-	Description string `json:"description"`
-	Status      int    `json:"status"`
-	Priority    int    `json:"priority"`
-	Name        string `json:"name"`
+func getEnvDatabaseConfig() {
+	log.Print("[CONFIG] Reading Env variables")
+	endPointFromENV := os.Getenv("ENV_HELPDESK_API_EP")
+	apiKeyFromENV := os.Getenv("ENV_HELPDESK_API_KEY")
+	apiPasswordFromENV := os.Getenv("ENV_HELPDESK_API_PASSWORD")
+
+	if len(endPointFromENV) > 0 {
+		log.Print("[CONFIG] Setting Env variables", endPointFromENV)
+		endPoint = endPointFromENV
+	}
+	if len(apiKeyFromENV) > 0 {
+		apiKey = apiKeyFromENV
+	}
+	if len(apiPasswordFromENV) > 0 {
+		apiPassword = apiPasswordFromENV
+	}
+
 }
 
 func Handler(w http.ResponseWriter, r *http.Request) {
 
-	println("Opening HTTP Request...", ENV_API_END_POINT)
-	req, err := http.NewRequest("POST", ENV_API_END_POINT, r.Body)
+	println("Opening HTTP Request...", endPoint)
+	req, err := http.NewRequest("POST", endPoint, r.Body)
 	req.Header.Add("Content-Type", "application/json")
-	req.SetBasicAuth(ENV_API_KEY, ENV_API_PASSWORD)
+	req.SetBasicAuth(apiKey, apiPassword)
 	if err != nil {
 		log.Fatal("NewRequest: ", err)
 		return
@@ -37,11 +52,11 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 
 	resp, err := client.Do(req)
 	if err != nil {
-		log.Fatal("Do: ", err)
+		http.Error(w, err.Error(), 400)
 		return
 	}
 
-	println("reuqest staus" + resp.Status)
+	println("request status for ticket creation :" + resp.Status)
 
 	defer resp.Body.Close()
 
@@ -49,30 +64,12 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(resp.Status))
 }
 
-func main() {
-	println("staritng app..")
-	http.HandleFunc("/", Handler)
-	http.ListenAndServe(":8085", nil)
-}
+// func main() {
+// 	println("staritng app..")
+// 	http.HandleFunc("/", Handler)
+// 	http.ListenAndServe(":8085", nil)
+// }
 
 func init() {
 	getEnvDatabaseConfig()
-}
-
-func getEnvDatabaseConfig() {
-	log.Print("[CONFIG] Reading Env variables")
-	endPoint := os.Getenv(ENV_API_END_POINT)
-	apiKey := os.Getenv(ENV_API_KEY)
-	apiPassword := os.Getenv(ENV_API_PASSWORD)
-
-	if len(endPoint) > 0 {
-		ENV_API_END_POINT = endPoint
-	}
-	if len(apiKey) > 0 {
-		ENV_API_KEY = apiKey
-	}
-	if len(apiPassword) > 0 {
-		ENV_API_PASSWORD = apiPassword
-	}
-
 }
