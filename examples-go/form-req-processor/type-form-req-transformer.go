@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"net/http"
+	"strconv"
+	"strings"
 	"time"
 )
 
@@ -29,7 +31,9 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		typeFormdata.FormResponse.Hidden.Email,
 		typeFormdata.FormResponse.Definition.Title)
 
-	//https://landg.typeform.com/to/H8mm3s?email=amit@not.valid&phone=090909099&policy=du77777&name=ami
+	//Populate Weather API calls
+	var weatherAPIInput WeatherAPIInput
+	weatherAPIInput.Country = "GB" // defaulted to UK
 
 	//populate Fresh Desk Specific Struct
 	var ticketDetails TicketDetails
@@ -38,41 +42,97 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 	ticketDetails.Name = typeFormdata.FormResponse.Hidden.Name
 	ticketDetails.Phone = typeFormdata.FormResponse.Hidden.Phone
 	//ticketDetails.Policy = typeFormdata.FormResponse.Hidden.Policy
-	ticketDetails.CustomFields.Weather = "WIND Speed 10mph - TEST DATA"
 
-	ticketDetails.Status = 2   //TODO
-	ticketDetails.Priority = 1 //TODO
+	ticketDetails.Status = 2   //will be updated based on weather data
+	ticketDetails.Priority = 1 //will be updated based on weather data
 	ticketDetails.Description = ""
 
 	//populate Descripton
 	for i := 0; i < len(typeFormdata.FormResponse.Definition.Fields); i++ {
 		ticketDetails.Description = ticketDetails.Description +
-			" <p> <b> " + typeFormdata.FormResponse.Definition.Fields[i].Title +
-			"<\b> : " + typeFormdata.FormResponse.Answers[i].Text + "</p><br />"
+			" <p>" + typeFormdata.FormResponse.Definition.Fields[i].Title
 
+		if typeFormdata.FormResponse.Definition.Fields[i].Type == "boolean" {
+			if typeFormdata.FormResponse.Answers[i].Boolean {
+				ticketDetails.Description = ticketDetails.Description + " : YES </p>"
+			} else {
+				ticketDetails.Description = ticketDetails.Description + " : NO </p>"
+			}
+		}
+		if typeFormdata.FormResponse.Definition.Fields[i].Type == "date" {
+			ticketDetails.Description = ticketDetails.Description + " : " + typeFormdata.FormResponse.Answers[i].Date + "</p>"
+		}
+
+		if strings.Contains(typeFormdata.FormResponse.Definition.Fields[i].Title,
+			"Where did the incident happen? (City/town name)") {
+			weatherAPIInput.City = typeFormdata.FormResponse.Answers[i].Text
+		}
+		if strings.Contains(typeFormdata.FormResponse.Definition.Fields[i].Title,
+			"When did the incident happen?") {
+			weatherAPIInput.Date = strings.Replace(typeFormdata.FormResponse.Answers[i].Date, "-", "", 2)
+			println(weatherAPIInput.Date)
+		}
 	}
 
-	println(ticketDetails.Email,
+	println("Data being processed are -", ticketDetails.Email,
 		ticketDetails.Subject,
-		ticketDetails.Name)
+		ticketDetails.Name,
+		weatherAPIInput.City,
+		weatherAPIInput.Date)
+
+	weatherJSON, err := json.Marshal(&weatherAPIInput)
+	if err != nil {
+		println(err)
+		return
+	}
+
+	//Call Wundergroud Fission function to Get Wind Speed
+	weatherAPIResp, err := http.Post("http://fission.landg.madeden.net/get-weather-data",
+		"application/json", bytes.NewBuffer(weatherJSON))
+
+	println("response Status for weatherAPI :", weatherAPIResp.Status)
+	var historicalData HistoricalData
+	err = json.NewDecoder(weatherAPIResp.Body).Decode(&historicalData)
+	if err != nil {
+		http.Error(w, err.Error(), 400)
+		return
+	}
+	// historicalDataJSON, err := json.Marshal(&historicalData)
+	// if err != nil {
+	// 	println(err)
+	// 	return
+	// }
+	// println("historicalDataJSON - ", string(historicalDataJSON))
+
+	//update ticket based on wind speed
+	windSpeed := historicalData.History.DailySummary[0].Maxwspdm
+	ticketDetails.CustomFields.Weather = "WIND Speed (mph): " + windSpeed
+	n, _ := strconv.ParseFloat(windSpeed, 10)
+	if n >= 20 {
+		ticketDetails.Priority = 4
+		ticketDetails.Status = 2
+		ticketDetails.Subject = ticketDetails.Subject + " :  ACCEPTED"
+	} else {
+		ticketDetails.Priority = 1
+		ticketDetails.Status = 4
+		ticketDetails.Subject = ticketDetails.Subject + " :  DECLINED"
+	}
 
 	ticketJSON, err := json.Marshal(&ticketDetails)
 	if err != nil {
 		println(err)
 		return
 	}
-
 	println("ticket details - ", string(ticketJSON))
-	//Call Wundergroud Fission function to Get Wind Speed
 
 	//Call Create Ticket API
-	resp, err := http.Post("http://fission.landg.madeden.net/register-ticket",
+	freshDeskResp, err := http.Post("http://fission.landg.madeden.net/register-ticket",
 		"application/json", bytes.NewBuffer(ticketJSON))
-	println("response Status for registration request:", resp.Status)
-	println("response Status for registration request:", resp.Header)
+
+	println("response Status for registration request:", freshDeskResp.Status)
 
 	w.Header().Set("content-type", "application/json")
-	w.Write([]byte(resp.Status))
+	w.Write([]byte(freshDeskResp.Status))
 
 }
 
@@ -81,6 +141,41 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 // 	http.HandleFunc("/", Handler)
 // 	http.ListenAndServe(":8083", nil)
 // }
+
+//Model for WeatherAPI
+
+type WeatherAPIInput struct {
+	City    string `json:"city"`
+	Country string `json:"country"`
+	Date    string `json:"date"`
+}
+
+type HistoricalData struct {
+	Response Response `json:"response"`
+	History  History  `json:"history"`
+}
+
+type Response struct {
+	Version string `json:"version"`
+}
+
+type History struct {
+	DailySummary []DailySummary `json:"dailysummary"`
+}
+
+type DailySummary struct {
+	Fog          string `json:"fog"`
+	Rain         string `json:"rain"`
+	Maxtempm     string `json:"maxtempm"`
+	Mintempm     string `json:"mintempm"`
+	Tornado      string `json:"tornado"`
+	Maxpressurem string `json:"maxpressurem"`
+	Minpressurem string `json:"minpressurem"`
+	Maxwspdm     string `json:"maxwspdm"`
+	Minwspdm     string `json:"minwspdm"`
+}
+
+//Model for FRESH DESK
 
 type TypeFormData struct {
 	EventID      string       `json:"event_id"`

@@ -120,11 +120,11 @@ type displaylocation struct {
 	Name string `json:"full"`
 }
 
-func main() {
-	println("staritng app..")
-	http.HandleFunc("/", Handler)
-	http.ListenAndServe(":8084", nil)
-}
+// func main() {
+// 	println("staritng app..")
+// 	http.HandleFunc("/", Handler)
+// 	http.ListenAndServe(":8084", nil)
+// }
 
 func getEnvConfig() {
 	println("[CONFIG] Reading Env variables")
