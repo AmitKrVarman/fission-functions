@@ -1,6 +1,6 @@
 apiVersion: 1
-description: Storm Surge Claim
-output: CreateTicket
+description: Storm Surge Claim workflow with Weather Risk
+output: CreateResult
 # Input: 'San Fransisco, CA'
 tasks:
   # Capture TYPE FORM Req and transform for Zen Desk
@@ -16,18 +16,55 @@ tasks:
     - TransformData
   # Compute Weather Risk
   ComputeWeatherRisk:
-    run: compute-weather-risk
+    run: get-weather-risk
     inputs: "{$.Tasks.GetWeatherData.Output}"
     requires:
     - GetWeatherData
 
+  ComposeResult:
+    run: compose
+    inputs:
+      tranformedData: "{$.Tasks.TransformData.Output}"
+      weatherData: "{$.Tasks.GetWeatherData.Output}"
+      weatherRisk: "{$.Tasks.ComputeWeatherRisk.Output}"
+    requires:
+    - ComputeWeatherRisk
+
+    # Update risk data before creating ticket
+  UpdateRiskData:
+    run: add-risk-data-to-ticket
+    inputs: "{$.Tasks.ComposeResult.Output}"
+    requires:
+    - TransformData
+    - GetWeatherData
+    - ComposeResult
+
     # Create Fresh Desk Ticket
   CreateTicket:
     run: register-ticket-v2
-    inputs: "{$.Tasks.TransformData.Output.ticketDetails}"
+    inputs: "{$.Tasks.UpdateRiskData.Output}"
+    requires:
+    - TransformData
+    - GetWeatherData
+    - ComposeResult
+    - UpdateRiskData
+
+    # to print the result for audit purpose
+  CreateResult:
+    run: compose
+    inputs:
+      transformData: "{$.Tasks.TransformData.Output}"
+      getWeatherData: "{$.Tasks.GetWeatherData.Output}"
+      weatherRiskData: "{$.Tasks.ComputeWeatherRisk.Output}"
+      composedResult: "{$.Tasks.ComposeResult.Output}"
+      updateRiskData: "{$.Tasks.UpdateRiskData.Output}"
+      zenDeskTicketRes: "{$.Tasks.CreateTicket.Output}"
     requires:
     - TransformData
     - GetWeatherData
     - ComputeWeatherRisk
+    - ComposeResult
+    - UpdateRiskData
+    - CreateTicket
 
 

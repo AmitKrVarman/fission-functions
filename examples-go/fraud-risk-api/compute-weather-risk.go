@@ -19,7 +19,6 @@ for any given date and city
 import (
 	"encoding/json"
 	"net/http"
-	"strconv"
 )
 
 type WeatherRiskData struct {
@@ -40,20 +39,10 @@ func Handler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	//check if valid data returned
-	if len(historicalData.History.DailySummary) == 0 {
-		http.Error(w, "No results found", 400)
-		return
-	}
 	var weatherRiskData = WeatherRiskData{}
-	maxWindSpeed, err := strconv.Atoi(historicalData.History.DailySummary[0].Maxwspdm)
-
-	if maxWindSpeed > 20 {
-		weatherRiskData.RiskScore = 50
-		weatherRiskData.Description = "Possible Stormy weather"
-	} else if maxWindSpeed > 50 {
-		weatherRiskData.RiskScore = 80
-		weatherRiskData.Description = "Stormy Waether identified"
+	if historicalData.History.DailySummary[0].Maxwspdm > 20 {
+		weatherRiskData.RiskScore = 70
+		weatherRiskData.Description = "Stormy weather identified"
 	} else {
 		weatherRiskData.RiskScore = 20
 		weatherRiskData.Description = "Very less likelyhood of Storm"
@@ -86,19 +75,19 @@ type History struct {
 }
 
 type DailySummary struct {
-	Fog          string `json:"fog"`
-	Rain         string `json:"rain"`
-	Maxtempm     string `json:"maxtempm"`
-	Mintempm     string `json:"mintempm"`
-	Tornado      string `json:"tornado"`
-	Maxpressurem string `json:"maxpressurem"`
-	Minpressurem string `json:"minpressurem"`
-	Maxwspdm     string `json:"maxwspdm"`
-	Minwspdm     string `json:"minwspdm"`
+	Fog          int64 `json:"fog"`
+	Rain         int64 `json:"rain"`
+	Maxtempm     int64 `json:"maxtempm"`
+	Mintempm     int64 `json:"mintempm"`
+	Tornado      int64 `json:"tornado"`
+	Maxpressurem int64 `json:"maxpressurem"`
+	Minpressurem int64 `json:"minpressurem"`
+	Maxwspdm     int64 `json:"maxwspdm"`
+	Minwspdm     int64 `json:"minwspdm"`
 }
 
 func main() {
 	println("staritng app..")
 	http.HandleFunc("/", Handler)
-	http.ListenAndServe(":8088", nil)
+	http.ListenAndServe(":8084", nil)
 }

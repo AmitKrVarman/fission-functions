@@ -160,16 +160,16 @@ func GetWeatherConditions(link string, dateString string) (string, error) {
 	}
 
 	//get summary for the given Date
-	dailySummary := historicalData.History.DailySummary[0]
+	//dailySummary := historicalData.History.DailySummary[0]
 
 	//marshal to JSON
-	dailySummaryJSON, err := json.Marshal(&dailySummary)
+	historicalDataJSON, err := json.Marshal(historicalData)
 	if err != nil {
 		println(err)
 		return "", err
 	}
 
-	return string(dailySummaryJSON), nil
+	return string(historicalDataJSON), nil
 }
 
 type autocomplete struct {
@@ -217,8 +217,8 @@ type DailySummary struct {
 	Minwspdm     string `json:"minwspdm"`
 }
 
-// func main() {
-// 	println("staritng app..")
-// 	http.HandleFunc("/", Handler)
-// 	http.ListenAndServe(":8084", nil)
-// }
+func main() {
+	println("staritng app..")
+	http.HandleFunc("/", Handler)
+	http.ListenAndServe(":8084", nil)
+}
