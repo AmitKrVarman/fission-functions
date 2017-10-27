@@ -1,0 +1,137 @@
+{
+	"info": {
+		"name": "form-req-processor",
+		"_postman_id": "934ebf5a-c01f-a23f-6606-a126d4f373f0",
+		"description": "",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "form-req-processor",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.test(\"Echo - Correct HTTP Code\", function() {",
+							"    pm.response.to.have.status(200);",
+							"})",
+							"",
+							"pm.test(\"Echo - Received JSON back\", function() {",
+							"    pm.response.to.be.json;",
+							"})",
+							"",
+							"pm.test(\"Echo - Correct Email\", function () {",
+							"    var jsonData = pm.response.json();",
+							"    var expectedEmail = pm.environment.get(\"email\");",
+							"    pm.expect(jsonData.ticketDetails.ticket.email).to.eql(expectedEmail);",
+							"});",
+							"",
+							""
+						]
+					}
+				},
+				{
+					"listen": "prerequest",
+					"script": {
+						"type": "text/javascript",
+						"exec": [
+							"pm.environment.set(\"email\", \"me@here.com\");",
+							"pm.environment.set(\"tv-make\", \"Q55\");",
+							""
+						]
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n\t\"event_id\": \"wLMhymGRLT\",\n\t\"event_type\": \"form_response\",\n\t\"form_response\": {\n\t\t\"form_id\": \"krCLZ1\",\n\t\t\"token\": \"92340b083bb287c3cbc2aabf9d78eff7\",\n\t\t\"submitted_at\": \"2017-10-12T11:50:47Z\",\n\t\t\"hidden\": {\n\t\t\t\"email\": \"{{email}}\"\n\t\t},\n\t\t\"definition\": {\n\t\t\t\"id\": \"krCLZ1\",\n\t\t\t\"title\": \"TV claim\",\n\t\t\t\"fields\": [{\n\t\t\t\t\"id\": \"WwzqHPb0K9Wv\",\n\t\t\t\t\"title\": \"Make of the TV\",\n\t\t\t\t\"type\": \"short_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"lGCVB9tse6Re\",\n\t\t\t\t\"title\": \"Model number of the TV\",\n\t\t\t\t\"type\": \"short_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63241151\",\n\t\t\t\t\"title\": \"Please upload a detailed image of the damage\",\n\t\t\t\t\"type\": \"file_upload\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63241330\",\n\t\t\t\t\"title\": \"When did the incident happen?\",\n\t\t\t\t\"type\": \"date\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"XiKbgOrX1OAp\",\n\t\t\t\t\"title\": \"Do you still have the TV in your possession?\",\n\t\t\t\t\"type\": \"yes_no\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63241939\",\n\t\t\t\t\"title\": \"We have made the following assumptions about your property, you and anyone living with you\",\n\t\t\t\t\"type\": \"legal\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"XdVgAjnucXRP\",\n\t\t\t\t\"title\": \"Was there a theft or a deliberate event by a 3rd party?\",\n\t\t\t\t\"type\": \"yes_no\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63241542\",\n\t\t\t\t\"title\": \"If you have any other insurance or warranties covering your TV, please advise us of the company name.\",\n\t\t\t\t\"type\": \"short_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63241572\",\n\t\t\t\t\"title\": \"Are you aware of anything else relevant to your claim that you would like to advise us of at this stage?\",\n\t\t\t\t\"type\": \"long_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"QYabj3uz2gs9\",\n\t\t\t\t\"title\": \"In as much detail as possible, please provide a full written account of what has happened to your TV, including where it happened.\",\n\t\t\t\t\"type\": \"long_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"u2dzBoYFjbRA\",\n\t\t\t\t\"title\": \"Serial number of the TV\",\n\t\t\t\t\"type\": \"short_text\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}, {\n\t\t\t\t\"id\": \"63391165\",\n\t\t\t\t\"title\": \"What was the purchase price of the TV?\",\n\t\t\t\t\"type\": \"number\",\n\t\t\t\t\"allow_multiple_selections\": false,\n\t\t\t\t\"allow_other_choice\": false\n\t\t\t}]\n\t\t},\n\t\t\"answers\": [{\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"Samsung\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"WwzqHPb0K9Wv\",\n\t\t\t\t\"type\": \"short_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"{{tv-make}}\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"lGCVB9tse6Re\",\n\t\t\t\t\"type\": \"short_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"file_url\",\n\t\t\t\"file_url\": \"https://admin.typeform.com/form/results/file/download/krCLZ1/63241151/495c05215011-broken_Vizio_LCD_TV.JPG\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63241151\",\n\t\t\t\t\"type\": \"file_upload\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"date\",\n\t\t\t\"date\": \"2018-12-12\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63241330\",\n\t\t\t\t\"type\": \"date\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"boolean\",\n\t\t\t\"boolean\": true,\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"XiKbgOrX1OAp\",\n\t\t\t\t\"type\": \"yes_no\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"boolean\",\n\t\t\t\"boolean\": true,\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63241939\",\n\t\t\t\t\"type\": \"legal\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"boolean\",\n\t\t\t\"boolean\": false,\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"XdVgAjnucXRP\",\n\t\t\t\t\"type\": \"yes_no\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"no\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63241542\",\n\t\t\t\t\"type\": \"short_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"no\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63241572\",\n\t\t\t\t\"type\": \"long_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"Tv broke... smashed to bits\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"QYabj3uz2gs9\",\n\t\t\t\t\"type\": \"long_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"text\",\n\t\t\t\"text\": \"Don't have it\",\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"u2dzBoYFjbRA\",\n\t\t\t\t\"type\": \"short_text\"\n\t\t\t}\n\t\t}, {\n\t\t\t\"type\": \"number\",\n\t\t\t\"number\": 1900,\n\t\t\t\"field\": {\n\t\t\t\t\"id\": \"63391165\",\n\t\t\t\t\"type\": \"number\"\n\t\t\t}\n\t\t}]\n\t}\n}\n"
+				},
+				"url": {
+					"raw": "http://localhost:8888",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8888"
+				},
+				"description": "Simple echo test"
+			},
+			"response": [
+				{
+					"id": "33c31cf2-61ae-4529-8ddf-d275f8e8fdbd",
+					"name": "echo-test",
+					"originalRequest": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{ \"test\": \"echo test\" } "
+						},
+						"url": {
+							"raw": "http://fission.landg.madeden.net/echo",
+							"protocol": "http",
+							"host": [
+								"fission",
+								"landg",
+								"madeden",
+								"net"
+							],
+							"path": [
+								"echo"
+							]
+						}
+					},
+					"status": "OK",
+					"code": 200,
+					"_postman_previewlanguage": "json",
+					"_postman_previewtype": "text",
+					"header": [
+						{
+							"key": "Content-Length",
+							"value": "26",
+							"name": "Content-Length",
+							"description": ""
+						},
+						{
+							"key": "Content-Type",
+							"value": "application/json",
+							"name": "Content-Type",
+							"description": ""
+						},
+						{
+							"key": "Date",
+							"value": "Wed, 25 Oct 2017 08:59:09 GMT",
+							"name": "Date",
+							"description": ""
+						},
+						{
+							"key": "Server",
+							"value": "Werkzeug/0.12.2 Python/3.5.2",
+							"name": "Server",
+							"description": ""
+						}
+					],
+					"cookie": [],
+					"responseTime": "34",
+					"body": "{\n  \"test\": \"echo test\"\n}\n"
+				}
+			]
+		}
+	]
+}

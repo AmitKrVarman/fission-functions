@@ -1,0 +1,9 @@
+---
+platform: linux
+
+inputs:
+- name: src
+
+run:
+  path: /test.sh
+
