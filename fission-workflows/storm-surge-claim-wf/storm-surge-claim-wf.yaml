@@ -8,12 +8,12 @@ tasks:
     run: transform-data
     inputs: "{$.Invocation.Inputs.default}"
 
-  # GET Weather Data
-  GetWeatherData:
-    run: get-weather-data-v2
-    inputs: "{$.Tasks.TransformData.Output.weatherAPIInput}"
-    requires:
-    - TransformData
+  # # GET Weather Data
+  # GetWeatherData:
+  #   run: get-weather-data-v2
+  #   inputs: "{$.Tasks.TransformData.Output.weatherAPIInput}"
+  #   requires:
+  #   - TransformData
 
     # Create Fresh Desk Ticket
   CreateTicket:
@@ -21,6 +21,6 @@ tasks:
     inputs: "{$.Tasks.TransformData.Output.ticketDetails}"
     requires:
     - TransformData
-    - GetWeatherData
+    # - GetWeatherData
 
 

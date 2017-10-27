@@ -10,25 +10,6 @@
         }
       },
       "requires": {
-        "GetWeatherData": {
-
-        },
-        "TransformData": {
-
-        }
-      },
-      "await": 2
-    },
-    "GetWeatherData": {
-      "id": "GetWeatherData",
-      "functionRef": "get-weather-data-v2",
-      "inputs": {
-        "default": {
-          "type": "expr",
-          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQud2VhdGhlckFQSUlucHV0fQ=="
-        }
-      },
-      "requires": {
         "TransformData": {
 
         }

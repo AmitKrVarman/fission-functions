@@ -24,7 +24,7 @@ const (
 	TEXT_FEILD        = "text"
 	DATE_FEILD        = "date"
 	PARA_START        = "<p>"
-	PARA_END          = "</p>"
+	PARA_END          = "</p><hr>"
 )
 
 // func main() {
@@ -72,6 +72,10 @@ func transformData(typeFormdata TypeFormData) TranformedData {
 	ticketDetails.Ticket.Subject = typeFormdata.FormResponse.Definition.Title
 	ticketDetails.Ticket.Email = typeFormdata.FormResponse.Hidden.Email
 	ticketDetails.Ticket.Phone = typeFormdata.FormResponse.Hidden.Phone
+	//set requester details
+	ticketDetails.Ticket.Requester.Email = typeFormdata.FormResponse.Hidden.Email
+	ticketDetails.Ticket.Requester.Name = typeFormdata.FormResponse.Hidden.Name
+	ticketDetails.Ticket.Requester.LocaleID = 1
 
 	//default data
 	ticketDetails.Ticket.Status = "new"
@@ -82,7 +86,7 @@ func transformData(typeFormdata TypeFormData) TranformedData {
 	//populate Descripton
 	for i, field := range typeFormdata.FormResponse.Definition.Fields {
 		answer := typeFormdata.FormResponse.Answers[i]
-		ticketBody += PARA_START + field.Title
+		ticketBody += PARA_START + "<b>" + field.Title + "</b>"
 
 		switch field.Type {
 		case BOOLEAN_FEILD:
@@ -93,7 +97,7 @@ func transformData(typeFormdata TypeFormData) TranformedData {
 			ticketBody += " : " + answer.Text + PARA_END
 		}
 
-		ticketDetails.Ticket.Comment.Body = ticketBody
+		ticketDetails.Ticket.Comment.HTMLBody = ticketBody
 
 		//for Storm Surge Claims - work around as ID is not returned by TYPE form
 		if strings.Compare(field.Title, STORM_SURGE_CLAIM) >= 0 {
@@ -176,12 +180,17 @@ type TicketDetails struct {
 		Priority string `json:"priority"`
 		Status   string `json:"status"`
 		Comment  struct {
-			Body string `json:"body"`
+			HTMLBody string `json:"html_body"`
 		} `json:"comment"`
 		CustomFields []struct {
 			ID    int    `json:"id"`
 			Value string `json:"value"`
 		} `json:"custom_fields"`
+		Requester struct {
+			LocaleID int    `json:"locale_id"`
+			Name     string `json:"name"`
+			Email    string `json:"email"`
+		} `json:"requester"`
 	} `json:"ticket"`
 }
 

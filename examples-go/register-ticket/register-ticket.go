@@ -33,9 +33,9 @@ import (
 
 //Default values , this can be overridden by setting ENV variables
 var (
-	endPoint    = "XXX"
-	apiKey      = "YYY"
-	apiPassword = "ZZZ"
+	endPoint    = "https://landg.zendesk.com/api/v2/tickets.json"
+	apiKey      = "aguaparachocolate@gmail.com/token"
+	apiPassword = "3OdKmqWsCL8uKR0QSH0jqmdVWx44CagRnRS01mnL"
 )
 
 func getEnvDatabaseConfig() {

@@ -117,16 +117,21 @@ type TranformedData struct {
 	TicketDetails struct {
 		Ticket struct {
 			Comment struct {
-				Body string `json:"body"`
+				HTMLBody string `json:"html_body"`
 			} `json:"comment"`
 			CustomFields []CustomFields `json:"custom_fields"`
-			Email        string         `json:"email"`
-			Phone        string         `json:"phone"`
-			Priority     string         `json:"priority"`
-			Status       string         `json:"status"`
-			Subject      string         `json:"subject"`
-			Type         string         `json:"type"`
-			TicketFormID int64          `json:"ticket_form_id"`
+			Requester    struct {
+				LocaleID int    `json:"locale_id"`
+				Name     string `json:"name"`
+				Email    string `json:"email"`
+			} `json:"requester"`
+			Email        string `json:"email"`
+			Phone        string `json:"phone"`
+			Priority     string `json:"priority"`
+			Status       string `json:"status"`
+			Subject      string `json:"subject"`
+			Type         string `json:"type"`
+			TicketFormID int64  `json:"ticket_form_id"`
 		} `json:"ticket"`
 	} `json:"ticketDetails"`
 	WeatherAPIInput struct {

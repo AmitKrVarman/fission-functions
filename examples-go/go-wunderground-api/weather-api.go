@@ -217,8 +217,8 @@ type DailySummary struct {
 	Minwspdm     string `json:"minwspdm"`
 }
 
-func main() {
-	println("staritng app..")
-	http.HandleFunc("/", Handler)
-	http.ListenAndServe(":8084", nil)
-}
+// func main() {
+// 	println("staritng app..")
+// 	http.HandleFunc("/", Handler)
+// 	http.ListenAndServe(":8084", nil)
+// }
