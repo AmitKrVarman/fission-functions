@@ -4,9 +4,9 @@
       "id": "ComposeResult",
       "functionRef": "compose",
       "inputs": {
-        "ticketDetails": {
+        "tranformedData": {
           "type": "expr",
-          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQudGlja2V0RGV0YWlsc30="
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXR9"
         },
         "weatherData": {
           "type": "expr",
@@ -44,21 +44,29 @@
       "id": "CreateResult",
       "functionRef": "compose",
       "inputs": {
-        "ticketTitle": {
+        "composedResult": {
           "type": "expr",
-          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQuc3ViamVjdH0="
+          "value": "eyQuVGFza3MuQ29tcG9zZVJlc3VsdC5PdXRwdXR9"
         },
-        "weatherRiskScore": {
+        "getWeatherData": {
           "type": "expr",
-          "value": "eyQuVGFza3MuQ29tcHV0ZVdlYXRoZXJSaXNrLk91dHB1dC5yaXNrU2NvcmV9"
+          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0fQ=="
         },
-        "windSpeed": {
+        "transformData": {
           "type": "expr",
-          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0Lmhpc3RvcnkuZGFpbHlzdW1tYXJ5WzBdLm1heHdzcGRtfQ=="
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXR9"
         },
-        "zenDeskTicketID": {
+        "updateRiskData": {
           "type": "expr",
-          "value": "eyQuVGFza3MuQ3JlYXRlVGlja2V0Lk91dHB1dC50aWNrZXRfaWR9"
+          "value": "eyQuVGFza3MuVXBkYXRlUmlza0RhdGEuT3V0cHV0fQ=="
+        },
+        "weatherRiskData": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ29tcHV0ZVdlYXRoZXJSaXNrLk91dHB1dH0="
+        },
+        "zenDeskTicketRes": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ3JlYXRlVGlja2V0Lk91dHB1dH0="
         }
       },
       "requires": {
@@ -93,11 +101,20 @@
         }
       },
       "requires": {
+        "ComposeResult": {
+
+        },
+        "GetWeatherData": {
+
+        },
+        "TransformData": {
+
+        },
         "UpdateRiskData": {
 
         }
       },
-      "await": 1
+      "await": 4
     },
     "GetWeatherData": {
       "id": "GetWeatherData",
@@ -129,7 +146,7 @@
     },
     "UpdateRiskData": {
       "id": "UpdateRiskData",
-      "functionRef": "add-risk-data",
+      "functionRef": "add-risk-data-to-ticket",
       "inputs": {
         "default": {
           "type": "expr",
@@ -139,9 +156,15 @@
       "requires": {
         "ComposeResult": {
 
+        },
+        "GetWeatherData": {
+
+        },
+        "TransformData": {
+
         }
       },
-      "await": 1
+      "await": 3
     }
   },
   "outputTask": "CreateResult"
