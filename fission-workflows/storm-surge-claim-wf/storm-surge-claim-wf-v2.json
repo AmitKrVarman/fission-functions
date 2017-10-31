@@ -1,0 +1,142 @@
+{
+  "tasks": {
+    "ComposeResult": {
+      "id": "ComposeResult",
+      "functionRef": "compose",
+      "inputs": {
+        "tranformedData": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXR9"
+        },
+        "weatherData": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0fQ=="
+        },
+        "weatherRisk": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ29tcHV0ZVdlYXRoZXJSaXNrLk91dHB1dH0="
+        }
+      },
+      "requires": {
+        "ComputeWeatherRisk": {
+
+        }
+      },
+      "await": 1
+    },
+    "ComputeWeatherRisk": {
+      "id": "ComputeWeatherRisk",
+      "functionRef": "get-weather-risk",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0fQ=="
+        }
+      },
+      "requires": {
+        "GetWeatherData": {
+
+        }
+      },
+      "await": 1
+    },
+    "CreateResult": {
+      "id": "CreateResult",
+      "functionRef": "compose",
+      "inputs": {
+        "claimTitle": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQudGlja2V0RGV0YWlscy50aWNrZXQuc3ViamVjdH0="
+        },
+        "riskScore": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ29tcHV0ZVdlYXRoZXJSaXNrLk91dHB1dC5yaXNrU2NvcmV9"
+        },
+        "tickeetId": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ3JlYXRlVGlja2V0Lk91dHB1dC50aWNrZXRfaWR9"
+        },
+        "windSpeed": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0Lmhpc3RvcnkuZGFpbHlzdW1tYXJ5WzBdLm1heHdzcGRtfQ=="
+        }
+      },
+      "requires": {
+        "CreateTicket": {
+
+        }
+      },
+      "await": 1
+    },
+    "CreateTicket": {
+      "id": "CreateTicket",
+      "functionRef": "register-ticket-v2",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVXBkYXRlUmlza0RhdGEuT3V0cHV0fQ=="
+        }
+      },
+      "requires": {
+        "ComposeResult": {
+
+        },
+        "ComputeWeatherRisk": {
+
+        },
+        "TransformData": {
+
+        },
+        "UpdateRiskData": {
+
+        }
+      },
+      "await": 4
+    },
+    "GetWeatherData": {
+      "id": "GetWeatherData",
+      "functionRef": "get-weather-data-v2",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQud2VhdGhlckFQSUlucHV0fQ=="
+        }
+      },
+      "requires": {
+        "TransformData": {
+
+        }
+      },
+      "await": 1
+    },
+    "TransformData": {
+      "id": "TransformData",
+      "functionRef": "transform-data",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuSW52b2NhdGlvbi5JbnB1dHMuZGVmYXVsdH0="
+        }
+      },
+      "requires": {
+      }
+    },
+    "UpdateRiskData": {
+      "id": "UpdateRiskData",
+      "functionRef": "add-risk-data-to-ticket",
+      "inputs": {
+        "default": {
+          "type": "expr",
+          "value": "eyQuVGFza3MuQ29tcG9zZVJlc3VsdC5PdXRwdXR9"
+        }
+      },
+      "requires": {
+        "ComposeResult": {
+
+        }
+      },
+      "await": 1
+    }
+  },
+  "outputTask": "CreateResult"
+}
