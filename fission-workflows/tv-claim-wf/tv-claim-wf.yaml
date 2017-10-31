@@ -3,7 +3,7 @@ description: Capture FORMS request and Create Fresh Desk Ticket
 output: CreateTicket
 # Input: 'Type Form JSON Output Data'
 tasks:
-  # Capture TYPE FORM Req and transform for Fresh Desk
+  # Capture TYPE FORM Req and transform for Zen Desk
   TransformData:
     run: transform-data
     inputs: "{$.Invocation.Inputs.default}"

@@ -1,6 +1,6 @@
 apiVersion: 1
 description: Storm Surge Claim workflow with Weather Risk
-output: CreateResult
+output: CreateTicket
 # Input: 'Type Form JSON Output Data'
 tasks:
   # Capture TYPE FORM Req and transform for Zen Desk
@@ -14,6 +14,7 @@ tasks:
     inputs: "{$.Tasks.TransformData.Output.weatherAPIInput}"
     requires:
     - TransformData
+    
   # Compute Weather Risk
   ComputeWeatherRisk:
     run: get-weather-risk
@@ -29,6 +30,8 @@ tasks:
       weatherRisk: "{$.Tasks.ComputeWeatherRisk.Output}"
     requires:
     - ComputeWeatherRisk
+    - GetWeatherData
+    - TransformData
 
     # Update risk data before creating ticket
   UpdateRiskData:
@@ -43,19 +46,4 @@ tasks:
     inputs: "{$.Tasks.UpdateRiskData.Output}"
     requires:
     - UpdateRiskData
-    - ComposeResult
-    - ComputeWeatherRisk
-    - TransformData
-
-    # to print the result for audit purpose
-  CreateResult:
-    run: compose
-    inputs:
-      claimTitle: "{$.Tasks.TransformData.Output.ticketDetails.ticket.subject}"
-      windSpeed: "{$.Tasks.GetWeatherData.Output.history.dailysummary[0].maxwspdm}"
-      riskScore: "{$.Tasks.ComputeWeatherRisk.Output.riskScore}"
-      tickeetId: "{$.Tasks.CreateTicket.Output.ticket_id}"
-    requires:
-    - CreateTicket
-
 

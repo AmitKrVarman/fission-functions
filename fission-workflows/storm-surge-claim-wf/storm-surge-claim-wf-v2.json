@@ -20,9 +20,15 @@
       "requires": {
         "ComputeWeatherRisk": {
 
+        },
+        "GetWeatherData": {
+
+        },
+        "TransformData": {
+
         }
       },
-      "await": 1
+      "await": 3
     },
     "ComputeWeatherRisk": {
       "id": "ComputeWeatherRisk",
@@ -40,34 +46,6 @@
       },
       "await": 1
     },
-    "CreateResult": {
-      "id": "CreateResult",
-      "functionRef": "compose",
-      "inputs": {
-        "claimTitle": {
-          "type": "expr",
-          "value": "eyQuVGFza3MuVHJhbnNmb3JtRGF0YS5PdXRwdXQudGlja2V0RGV0YWlscy50aWNrZXQuc3ViamVjdH0="
-        },
-        "riskScore": {
-          "type": "expr",
-          "value": "eyQuVGFza3MuQ29tcHV0ZVdlYXRoZXJSaXNrLk91dHB1dC5yaXNrU2NvcmV9"
-        },
-        "tickeetId": {
-          "type": "expr",
-          "value": "eyQuVGFza3MuQ3JlYXRlVGlja2V0Lk91dHB1dC50aWNrZXRfaWR9"
-        },
-        "windSpeed": {
-          "type": "expr",
-          "value": "eyQuVGFza3MuR2V0V2VhdGhlckRhdGEuT3V0cHV0Lmhpc3RvcnkuZGFpbHlzdW1tYXJ5WzBdLm1heHdzcGRtfQ=="
-        }
-      },
-      "requires": {
-        "CreateTicket": {
-
-        }
-      },
-      "await": 1
-    },
     "CreateTicket": {
       "id": "CreateTicket",
       "functionRef": "register-ticket-v2",
@@ -78,20 +56,11 @@
         }
       },
       "requires": {
-        "ComposeResult": {
-
-        },
-        "ComputeWeatherRisk": {
-
-        },
-        "TransformData": {
-
-        },
         "UpdateRiskData": {
 
         }
       },
-      "await": 4
+      "await": 1
     },
     "GetWeatherData": {
       "id": "GetWeatherData",
@@ -138,5 +107,5 @@
       "await": 1
     }
   },
-  "outputTask": "CreateResult"
+  "outputTask": "CreateTicket"
 }
